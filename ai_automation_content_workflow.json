@@ -1,0 +1,22 @@
+{
+  "name": "AI Automation Content Workflow",
+  "nodes": [
+    {"id": "1", "name": "Schedule Trigger", "type": "cron", "parameters": {"triggerTimes": [{"mode": "everyWeek", "weekday": "monday", "hour": 9}]}},
+    {"id": "2", "name": "Google Trends API", "type": "httpRequest", "parameters": {"url": "https://trends.google.com/trends/api/explore", "method": "GET"}},
+    {"id": "3", "name": "YouTube API", "type": "httpRequest", "parameters": {"url": "https://www.googleapis.com/youtube/v3/search", "method": "GET"}},
+    {"id": "4", "name": "Merge Topics", "type": "merge", "parameters": {"mode": "combine"}},
+    {"id": "5", "name": "Prompt Generator (OpenAI)", "type": "openAi", "parameters": {"model": "gpt-4-turbo", "prompt": "Generate 3 prompts for {{topic}} about AI Automation."}},
+    {"id": "6", "name": "Content Creator (Blog)", "type": "openAi", "parameters": {"model": "gpt-4-turbo", "prompt": "Write a 600-word blog post about {{topic}} based on {{prompt}}."}},
+    {"id": "7", "name": "Video Generator (Google VEO)", "type": "httpRequest", "parameters": {"url": "https://video.googleapis.com/v1beta/veo/generate", "method": "POST"}},
+    {"id": "8", "name": "Submit to Google Sheets", "type": "googleSheets", "parameters": {"operation": "append"}}
+  ],
+  "connections": {
+    "1": {"main": [[{"node": "2"}]]},
+    "2": {"main": [[{"node": "3"}]]},
+    "3": {"main": [[{"node": "4"}]]},
+    "4": {"main": [[{"node": "5"}]]},
+    "5": {"main": [[{"node": "6"}]]},
+    "6": {"main": [[{"node": "7"}]]},
+    "7": {"main": [[{"node": "8"}]]}
+  }
+}
